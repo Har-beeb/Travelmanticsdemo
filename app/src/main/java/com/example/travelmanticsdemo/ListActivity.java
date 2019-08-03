@@ -57,12 +57,11 @@ public class ListActivity extends AppCompatActivity {
 //
 //            }
 //        };
-        mDatabaseReference.addChildEventListener(mChildListener);
         RecyclerView recyclerView = findViewById(R.id.list_item);
         final DealAdapter dealAdapter = new DealAdapter();
         recyclerView.setAdapter(dealAdapter);
         LinearLayoutManager linearLayoutManager =
-                new LinearLayoutManager(this, RecyclerView.VERTICAL, false);
+                new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false);
         recyclerView.setLayoutManager(linearLayoutManager);
     }
 }
