@@ -1,6 +1,7 @@
 package com.example.travelmanticsdemo;
 
 import android.content.Context;
+import android.content.Intent;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -11,6 +12,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -26,7 +28,6 @@ public class DealAdapter extends RecyclerView.Adapter<DealAdapter.DealViewHolder
     private ChildEventListener mChildListener;
 
     public DealAdapter(){
-        FirebaseUtils.openFbReference("traveldeals");
         mFirebaseDatabase = FirebaseUtils.mFirebaseDatabase;
         mDatabaseReference = FirebaseUtils.mDatabaseReference;
         deals = FirebaseUtils.mDeals;
@@ -38,6 +39,7 @@ public class DealAdapter extends RecyclerView.Adapter<DealAdapter.DealViewHolder
                 travelDeal.setId(dataSnapshot.getKey());
                 deals.add(travelDeal);
                 notifyItemInserted(deals.size()-1);
+
             }
 
             @Override
@@ -47,6 +49,10 @@ public class DealAdapter extends RecyclerView.Adapter<DealAdapter.DealViewHolder
 
             @Override
             public void onChildRemoved(@NonNull DataSnapshot dataSnapshot) {
+                TravelDeal travelDeal = dataSnapshot.getValue(TravelDeal.class);
+                Log.d("Deal", travelDeal.getTitle());
+                travelDeal.setId(dataSnapshot.getKey());
+                deals.remove(travelDeal);
 
             }
 
@@ -82,16 +88,33 @@ public class DealAdapter extends RecyclerView.Adapter<DealAdapter.DealViewHolder
         return deals.size();
     }
 
-    public class DealViewHolder extends RecyclerView.ViewHolder{
+    public class DealViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener{
         TextView txtTitle;
+        TextView txtDescription;
+        TextView txtPrice;
 
         public DealViewHolder(@NonNull View itemView) {
             super(itemView);
-            txtTitle = itemView.findViewById(R.id.textView);
+            txtTitle = itemView.findViewById(R.id.textTitle);
+            txtDescription = itemView.findViewById(R.id.textDescription);
+            txtPrice = itemView.findViewById(R.id.textPrice);
+            itemView.setOnClickListener(this);
         }
 
         public void bind(TravelDeal deal){
             txtTitle.setText(deal.getTitle());
+            txtDescription.setText(deal.getDescription());
+            txtPrice.setText(deal.getPrice());
+        }
+
+        @Override
+        public void onClick(View v) {
+            int position = getAdapterPosition();
+            Log.d("Click", String.valueOf(position));
+            TravelDeal selectDeal = deals.get(position);
+            Intent intent = new Intent(v.getContext(), DealActivity.class);
+            intent.putExtra("Deal", selectDeal);
+            v.getContext().startActivity(intent);
         }
     }
 }
