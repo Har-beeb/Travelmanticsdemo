@@ -15,6 +15,8 @@ import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -28,6 +30,8 @@ public class FirebaseUtils {
     public static ArrayList<TravelDeal> mDeals;
     private static FirebaseAuth mAuth;
     private static  FirebaseAuth.AuthStateListener mAuthListener;
+    public static FirebaseStorage mStorage;
+    public static StorageReference mStorageRef;
     private static ListActivity caller;
     public static boolean isAdmin;
 
@@ -43,19 +47,14 @@ public class FirebaseUtils {
             mAuthListener = new FirebaseAuth.AuthStateListener() {
                 @Override
                 public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
-//                    if (caller instanceof ListActivity) {
-//                        (ListActivity) caller.showMenu();
-//                    }else if (caller instanceof DealActivity){
-//                        (DealActivity)caller.showMenu();
-//                    }
                     if (mAuth.getCurrentUser() == null) FirebaseUtils.signIn();
                     else{
                         String userId = FirebaseAuth.getInstance().getCurrentUser().getUid();
                         checkAdmin(userId);
                     }
-                    //Toast.makeText(callerActivity.getBaseContext(), "Welcome Back!!!", Toast.LENGTH_SHORT).show();
                 }
             };
+            connectStorage();
         }
         mDeals = new ArrayList<TravelDeal>();
         mDatabaseReference = mFirebaseDatabase.getReference().child(ref);
@@ -101,7 +100,11 @@ public class FirebaseUtils {
                         new AuthUI.IdpConfig.EmailBuilder().build());
 
         caller.startActivityForResult(AuthUI.getInstance().createSignInIntentBuilder()
-                .setAvailableProviders(provider).build(), RC_SIGN_IN);
+                .setAvailableProviders(provider).
+                        setLogo(R.drawable.f_logo)
+                .setTosAndPrivacyPolicyUrls("https://gmail.com/terms.html",
+                        "https://gmail.com/privacy.html")
+                .build(), RC_SIGN_IN);
     }
 
     public static void attachListenr(){
@@ -112,6 +115,10 @@ public class FirebaseUtils {
     public static void detachListener(){
         mAuth.removeAuthStateListener(mAuthListener);
 
+    }
+    public  static void connectStorage(){
+        mStorage = FirebaseStorage.getInstance();
+        mStorageRef = mStorage.getReference().child("deals_pictures");
     }
 
 }

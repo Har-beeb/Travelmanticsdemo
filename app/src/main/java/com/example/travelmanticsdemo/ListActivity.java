@@ -2,6 +2,7 @@ package com.example.travelmanticsdemo;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -9,30 +10,35 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
-import android.view.MenuInflater;
 import android.view.MenuItem;
+import android.view.View;
 
 import com.firebase.ui.auth.AuthUI;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
-import com.google.firebase.database.ChildEventListener;
-import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
-
-import java.util.ArrayList;
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
+import com.google.android.material.snackbar.Snackbar;
 
 public class ListActivity extends AppCompatActivity {
-    //ArrayList<TravelDeal> deals;
-    private FirebaseDatabase mFirebaseDatabase;
-    private DatabaseReference mDatabaseReference;
-    private ChildEventListener mChildListener;
     private RecyclerView mDealRecycler;
     private DealAdapter mDealAdapter;
+    FloatingActionButton fab;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_list);
+        //Toolbar toolbar = findViewById(R.id.toolbar);
+        //setSupportActionBar(toolbar);
+
+//        FloatingActionButton fab = findViewById(R.id.fab);
+//        fab.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View view) {
+//                startActivity(new Intent(ListActivity.this, DealActivity.class));
+//            }
+//        });
+
 //        mFirebaseDatabase = FirebaseDatabase.getInstance();
 //        mDatabaseReference = mFirebaseDatabase.getReference().child("traveldeals");
 //        mChildListener = new ChildEventListener() {
@@ -63,25 +69,41 @@ public class ListActivity extends AppCompatActivity {
 //
 //            }
 //        };
+        //Toolbar toolbar = findViewById(R.id.toolbar);
+        //setSupportActionBar(toolbar);
+        fab = findViewById(R.id.fab);
+        fab.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                startActivity(new Intent(ListActivity.this, DealActivity.class));
+//                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
+//                        .setAction("Action", null).show();
+            }
+        });
     }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        MenuInflater inflater = getMenuInflater();
-        inflater.inflate(R.menu.list_activity_menu, menu);
-        MenuItem insertMenu = menu.findItem(R.id.insert_menu);
-        if (FirebaseUtils.isAdmin == true)
-            insertMenu.setVisible(true);
-        else
-            insertMenu.setVisible(false);
+//        MenuInflater inflater = getMenuInflater();
+//        inflater.inflate(R.menu.menu, menu);
+        getMenuInflater().inflate(R.menu.menu, menu);
+        //MenuItem insertMenu = menu.findItem(R.id.insert_menu);
+        if (FirebaseUtils.isAdmin == true) {
+            //insertMenu.setVisible(true);
+            fab.setVisibility(View.VISIBLE);
+        }
+        else if (FirebaseUtils.isAdmin == false){
+            fab.setVisibility(View.INVISIBLE);
+            //insertMenu.setVisible(false);
+        }
         return true;
     }
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()){
-            case R.id.insert_menu:
-                startActivity(new Intent(this, DealActivity.class));
-                return  true;
+//            case R.id.insert_menu:
+//                startActivity(new Intent(this, DealActivity.class));
+//                return  true;
             case R.id.logout_menu:
                 AuthUI.getInstance().signOut(this).addOnCompleteListener(new OnCompleteListener<Void>() {
                     @Override
@@ -92,7 +114,6 @@ public class ListActivity extends AppCompatActivity {
                 });
                 FirebaseUtils.detachListener();
                 return true;
-
         }
         return super.onOptionsItemSelected(item);
     }
