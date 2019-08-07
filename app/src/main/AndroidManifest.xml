@@ -14,6 +14,9 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
+        <activity android:name=".DealActivity"
+            android:parentActivityName=".ListActivity">
+        </activity>
         <activity android:name=".ListActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -21,7 +24,8 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".DealActivity"></activity>
+        <activity android:name=".AdminActivity"
+            android:parentActivityName=".ListActivity"/>
     </application>
 
 </manifest>

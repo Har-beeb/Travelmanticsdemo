@@ -100,8 +100,7 @@ public class FirebaseUtils {
                         new AuthUI.IdpConfig.EmailBuilder().build());
 
         caller.startActivityForResult(AuthUI.getInstance().createSignInIntentBuilder()
-                .setAvailableProviders(provider).
-                        setLogo(R.drawable.f_logo)
+                .setAvailableProviders(provider).                       setLogo(R.drawable.logo_a)
                 .setTosAndPrivacyPolicyUrls("https://gmail.com/terms.html",
                         "https://gmail.com/privacy.html")
                 .build(), RC_SIGN_IN);

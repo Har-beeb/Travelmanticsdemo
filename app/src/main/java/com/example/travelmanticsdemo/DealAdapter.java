@@ -2,11 +2,11 @@ package com.example.travelmanticsdemo;
 
 import android.content.Context;
 import android.content.Intent;
-import android.content.res.Resources;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -14,7 +14,6 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -91,14 +90,16 @@ public class DealAdapter extends RecyclerView.Adapter<DealAdapter.DealViewHolder
         TextView txtTitle;
         TextView txtDescription;
         TextView txtPrice;
+        Button btnView;
 
         public DealViewHolder(@NonNull View itemView) {
             super(itemView);
-            txtTitle = itemView.findViewById(R.id.textTitle);
-            txtDescription = itemView.findViewById(R.id.textDescription);
-            txtPrice = itemView.findViewById(R.id.textPrice);
-            imageDeal = itemView.findViewById(R.id.imageView);
-            itemView.setOnClickListener(this);
+            txtTitle = itemView.findViewById(R.id.txtTitle);
+            txtDescription = itemView.findViewById(R.id.txtDescription);
+            txtPrice = itemView.findViewById(R.id.txtPrice);
+            btnView = itemView.findViewById(R.id.btnView);
+            imageDeal = itemView.findViewById(R.id.image);
+            btnView.setOnClickListener(this);
         }
 
         public void bind(TravelDeal deal){
@@ -114,9 +115,15 @@ public class DealAdapter extends RecyclerView.Adapter<DealAdapter.DealViewHolder
             int position = getAdapterPosition();
             Log.d("Click", String.valueOf(position));
             TravelDeal selectDeal = deals.get(position);
-            Intent intent = new Intent(v.getContext(), DealActivity.class);
-            intent.putExtra("Deal", selectDeal);
-            v.getContext().startActivity(intent);
+            if (FirebaseUtils.isAdmin){
+                Intent intent = new Intent(v.getContext(), AdminActivity.class);
+                intent.putExtra("Deal", selectDeal);
+                v.getContext().startActivity(intent);
+            }else{
+                Intent intent = new Intent(v.getContext(), DealActivity.class);
+                intent.putExtra("Deal", selectDeal);
+                v.getContext().startActivity(intent);
+            }
         }
     }
     public void showImage(String url){
